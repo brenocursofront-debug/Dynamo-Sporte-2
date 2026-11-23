@@ -1,0 +1,779 @@
+/* ==========================================================================
+   DYNAMO SPORTS - LOGIN + ACESSIBILIDADE
+   Carregado DEPOIS do style.css para poder ajustar o que for preciso.
+
+   SUMÁRIO
+   01. Utilitários (texto só para leitor de tela)
+   02. Foco visível no teclado
+   03. Alvos de toque confortáveis (mín. 44px)
+   04. Botões do topo (Acessibilidade e Conta)
+   05. Janelas (dialog): login e painel
+   06. Formulários (campos, erros, senha)
+   07. Painel de acessibilidade (chaves, perfis)
+   08. Modos: tamanho do texto, contraste, fonte, espaçamento, links
+   09. Modos: calmo / sem animações (autismo e sensibilidade sensorial)
+   10. Régua de leitura
+   ========================================================================== */
+
+
+/* --------------------------------------------------------------------------
+   01. UTILITÁRIOS
+   -------------------------------------------------------------------------- */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+
+/* --------------------------------------------------------------------------
+   02. FOCO VISÍVEL
+   O style.css removia o contorno dos botões (outline: none), o que deixava
+   quem usa teclado "no escuro". Aqui o foco volta, com anel duplo (escuro +
+   verde-limão) que aparece tanto em fundo claro quanto em fundo escuro.
+   -------------------------------------------------------------------------- */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+summary:focus-visible,
+[tabindex]:focus-visible {
+  outline: 3px solid #101b18;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 6px #c7f36b;
+  border-radius: 6px;
+}
+
+/* Itens que recebem foco por código (títulos de janela, main) não precisam de anel */
+#conteudo:focus,
+dialog h2[tabindex="-1"]:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+
+/* --------------------------------------------------------------------------
+   03. ALVOS DE TOQUE (WCAG 2.5.8)
+   -------------------------------------------------------------------------- */
+.botao,
+.filtro,
+.botao-carrinho,
+.botao-menu,
+.botao-topo,
+.carrinho__remover,
+.carrinho__fechar,
+.dialogo__fechar,
+.link-botao {
+  min-height: 44px;
+}
+.botao-menu,
+.carrinho__remover,
+.carrinho__fechar,
+.dialogo__fechar {
+  min-width: 44px;
+}
+
+
+/* --------------------------------------------------------------------------
+   04. BOTÕES DO TOPO
+   -------------------------------------------------------------------------- */
+.botao-topo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: 1px solid var(--line);
+  background-color: var(--white);
+  color: var(--ink);
+  border-radius: var(--radius-pill);
+  padding: 8px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  box-shadow: var(--shadow-sm);
+  white-space: nowrap;
+}
+.botao-topo:hover {
+  border-color: var(--ink);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+.botao-topo svg {
+  flex-shrink: 0;
+}
+.botao-topo__texto {
+  max-width: 130px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Quando o cliente está logado, o botão de conta ganha destaque verde */
+.botao-topo--logado {
+  background-color: var(--green-bg-light);
+  border-color: #b9d98a;
+  color: var(--green-dark);
+}
+
+@media (max-width: 960px) {
+  /* Em telas pequenas fica só o ícone (o nome continua no aria-label) */
+  .botao-topo__texto {
+    display: none;
+  }
+  .botao-topo {
+    padding: 8px 12px;
+  }
+}
+
+
+/* --------------------------------------------------------------------------
+   05. JANELAS (<dialog>)
+   O elemento nativo já prende o foco dentro dele, fecha com ESC e é
+   anunciado como "janela" pelos leitores de tela.
+   -------------------------------------------------------------------------- */
+.dialogo {
+  border: none;
+  border-radius: var(--radius-lg);
+  padding: 26px;
+  width: min(460px, calc(100% - 24px));
+  max-height: calc(100dvh - 24px);
+  overflow-y: auto;
+  background: var(--white);
+  color: var(--ink);
+  box-shadow: var(--shadow-lg);
+  margin: auto;
+}
+.dialogo::backdrop {
+  background: rgba(10, 20, 14, 0.6);
+}
+
+/* O painel de acessibilidade abre como uma gaveta do lado direito */
+.dialogo--painel {
+  margin: 0 0 0 auto;
+  height: 100dvh;
+  max-height: 100dvh;
+  width: min(430px, 100%);
+  border-radius: var(--radius-lg) 0 0 var(--radius-lg);
+}
+.dialogo--painel::backdrop {
+  background: rgba(10, 20, 14, 0.35);
+}
+
+/* Trava a rolagem da página quando uma janela está aberta */
+body:has(dialog[open]) {
+  overflow: hidden;
+}
+
+.dialogo__cabecalho {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+.dialogo__cabecalho h2 {
+  font-family: var(--font-titulo);
+  font-size: 24px;
+  line-height: 1.2;
+}
+.dialogo__fechar {
+  display: inline-grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--paper);
+  color: var(--ink);
+}
+.dialogo__fechar:hover {
+  border-color: var(--ink);
+}
+.dialogo__desc {
+  color: var(--muted);
+  font-size: 14px;
+  margin-bottom: 18px;
+}
+.dialogo__nota {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+  font-size: 12px;
+  color: var(--muted);
+}
+
+
+/* --------------------------------------------------------------------------
+   06. FORMULÁRIOS
+   Rótulos sempre visíveis, erros em texto (não só em cor), mensagens curtas.
+   -------------------------------------------------------------------------- */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.form[hidden],
+[data-visao][hidden] {
+  display: none;
+}
+
+.campo label {
+  display: block;
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+.campo input[type="text"],
+.campo input[type="email"],
+.campo input[type="password"] {
+  width: 100%;
+  min-height: 48px;
+  padding: 0 14px;
+  border: 2px solid #5e6f66;
+  border-radius: 12px;
+  background: var(--white);
+  color: var(--ink);
+  font: inherit;
+  font-size: 16px; /* 16px evita o "zoom" automático do iPhone */
+}
+.campo__dica {
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+/* Campo com erro: borda vermelha + mensagem escrita (não depende só da cor) */
+.campo input[aria-invalid="true"] {
+  border-color: #b3261e;
+  background: #fff6f5;
+}
+.campo__erro {
+  margin-top: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #b3261e;
+}
+.campo__erro:empty {
+  display: none;
+}
+
+/* Resumo de erros do formulário (anunciado pelo leitor de tela via role="alert") */
+.form__resumo {
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 2px solid #b3261e;
+  background: #fff6f5;
+  color: #7a1711;
+  font-size: 14px;
+  font-weight: 700;
+}
+.form__resumo:empty {
+  display: none;
+}
+.form__resumo--ok {
+  border-color: var(--green-dark);
+  background: var(--green-bg-light);
+  color: var(--green-dark);
+}
+
+/* Campo da senha com botão "Mostrar" */
+.campo__senha {
+  position: relative;
+}
+.campo__senha input {
+  padding-right: 92px !important;
+}
+.campo__ver {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  min-height: 36px;
+  padding: 0 12px;
+  border-radius: 8px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* Caixa de aceite dos termos */
+.campo--check {
+  display: grid;
+  grid-template-columns: 24px 1fr;
+  column-gap: 10px;
+  align-items: start;
+}
+.campo--check input {
+  width: 22px;
+  height: 22px;
+  margin-top: 2px;
+  accent-color: var(--green-dark);
+}
+.campo--check label {
+  margin: 0;
+  font-weight: 500;
+}
+.campo--check .campo__erro {
+  grid-column: 1 / -1;
+}
+
+.form__troca {
+  text-align: center;
+  font-size: 14px;
+}
+.link-botao {
+  background: none;
+  border: none;
+  padding: 0 4px;
+  font-weight: 800;
+  color: var(--green-dark);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+
+/* --------------------------------------------------------------------------
+   07. PAINEL DE ACESSIBILIDADE
+   -------------------------------------------------------------------------- */
+.a11y-grupo {
+  border-top: 1px solid var(--line);
+  padding: 18px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.a11y-grupo h3 {
+  font-family: var(--font-titulo);
+  font-size: 16px;
+}
+
+.a11y-perfis {
+  display: grid;
+  gap: 8px;
+}
+.a11y-perfil {
+  text-align: left;
+  min-height: 48px;
+  padding: 10px 16px;
+  border-radius: 12px;
+  border: 2px solid var(--ink);
+  background: var(--white);
+  color: var(--ink);
+  font-weight: 800;
+  font-size: 14px;
+}
+.a11y-perfil:hover {
+  background: var(--green-bg-light);
+}
+
+/* Chave liga/desliga: o estado aparece em TEXTO ("Ligado"/"Desligado") */
+.chave {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  width: 100%;
+  min-height: 56px;
+  padding: 10px 14px;
+  text-align: left;
+  border: 2px solid var(--line);
+  border-radius: 12px;
+  background: var(--white);
+  color: var(--ink);
+}
+.chave:hover {
+  border-color: var(--ink);
+}
+.chave__rotulo {
+  font-weight: 700;
+  font-size: 14px;
+}
+.chave__rotulo small {
+  display: block;
+  margin-top: 2px;
+  font-weight: 400;
+  font-size: 12.5px;
+  color: var(--muted);
+  line-height: 1.4;
+}
+.chave__estado {
+  flex-shrink: 0;
+  min-width: 82px;
+  text-align: center;
+  padding: 5px 10px;
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--muted);
+}
+.chave[aria-pressed="true"] {
+  border-color: var(--green-dark);
+  background: var(--green-bg-light);
+}
+.chave[aria-pressed="true"] .chave__estado {
+  background: var(--green-dark);
+  border-color: var(--green-dark);
+  color: var(--white);
+}
+
+.a11y-fonte,
+.a11y-voz {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 14px;
+  border: 2px solid var(--line);
+  border-radius: 12px;
+}
+.a11y-fonte {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+.a11y-fonte__rotulo {
+  font-weight: 700;
+  font-size: 14px;
+}
+.a11y-fonte__botoes {
+  display: flex;
+  gap: 8px;
+}
+
+
+/* --------------------------------------------------------------------------
+   08. MODOS DE VISÃO
+   -------------------------------------------------------------------------- */
+
+/* Tamanho do texto: aplica zoom só no conteúdo (o carrinho e as janelas,
+   que são fixos na tela, não são afetados e continuam cabendo). */
+.topo,
+main,
+.rodape,
+.barra-oferta {
+  zoom: var(--a11y-zoom, 1);
+}
+
+/* Fonte de leitura fácil: troca as duas variáveis de fonte do site */
+html.a11y-legivel {
+  --font-corpo: "Atkinson Hyperlegible", Verdana, Tahoma, "Trebuchet MS", sans-serif;
+  --font-titulo: "Atkinson Hyperlegible", Verdana, Tahoma, "Trebuchet MS", sans-serif;
+}
+
+/* Espaçamento de texto (critério WCAG 1.4.12) */
+html.a11y-espaco body * {
+  line-height: 1.8 !important;
+  letter-spacing: 0.05em !important;
+  word-spacing: 0.16em !important;
+}
+html.a11y-espaco main p {
+  margin-bottom: 1.4em !important;
+}
+
+/* Destacar links */
+html.a11y-links a {
+  text-decoration: underline !important;
+  text-underline-offset: 3px;
+  font-weight: 700 !important;
+}
+
+/* ---- ALTO CONTRASTE (preto, branco e amarelo) ---- */
+html.a11y-contraste,
+html.a11y-contraste body {
+  background: #000 !important;
+}
+html.a11y-contraste *,
+html.a11y-contraste *::before,
+html.a11y-contraste *::after {
+  background-color: #000 !important;
+  background-image: none !important;
+  color: #fff !important;
+  border-color: #fff !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+html.a11y-contraste a,
+html.a11y-contraste .link-botao {
+  color: #ffeb3b !important;
+  text-decoration: underline !important;
+}
+html.a11y-contraste button,
+html.a11y-contraste .botao,
+html.a11y-contraste .filtro,
+html.a11y-contraste .a11y-perfil {
+  border: 2px solid #fff !important;
+}
+html.a11y-contraste .botao--verde,
+html.a11y-contraste .botao--laranja,
+html.a11y-contraste .filtro.ativo,
+html.a11y-contraste .contador {
+  background-color: #ffeb3b !important;
+  color: #000 !important;
+}
+html.a11y-contraste .chave[aria-pressed="true"] {
+  border-color: #ffeb3b !important;
+}
+html.a11y-contraste .chave[aria-pressed="true"] .chave__estado {
+  background-color: #ffeb3b !important;
+  color: #000 !important;
+  border-color: #ffeb3b !important;
+}
+html.a11y-contraste .barra {
+  border: 2px solid #fff !important;
+}
+html.a11y-contraste .barra__preenchimento {
+  background-color: #ffeb3b !important;
+}
+html.a11y-contraste .campo__erro,
+html.a11y-contraste .form__resumo {
+  color: #ff8a80 !important;
+}
+/* Logo escuro do cabeçalho precisa de um fundo claro para continuar legível */
+html.a11y-contraste .topo .logo__imagem {
+  background-color: #fff !important;
+  padding: 4px 8px;
+  border-radius: 8px;
+}
+html.a11y-contraste :focus-visible {
+  outline: 4px solid #ffeb3b !important;
+  box-shadow: 0 0 0 7px #000 !important;
+}
+html.a11y-contraste {
+  filter: none !important;
+}
+
+
+/* --------------------------------------------------------------------------
+   09. MODO CALMO e SEM ANIMAÇÕES
+   Pensado para autismo e outras sensibilidades sensoriais: tira movimento,
+   pulsos, desfoque e cores muito saturadas; reduz distrações na tela.
+   -------------------------------------------------------------------------- */
+html.a11y-calmo *,
+html.a11y-calmo *::before,
+html.a11y-calmo *::after,
+html.a11y-sem-animacao *,
+html.a11y-sem-animacao *::before,
+html.a11y-sem-animacao *::after {
+  animation: none !important;
+  transition: none !important;
+  scroll-behavior: auto !important;
+}
+html.a11y-calmo *:hover,
+html.a11y-sem-animacao *:hover {
+  transform: none !important;
+}
+html.a11y-calmo .reveal,
+html.a11y-sem-animacao .reveal {
+  opacity: 1 !important;
+  transform: none !important;
+}
+html.a11y-calmo .whatsapp-flutuante__pulso,
+html.a11y-sem-animacao .whatsapp-flutuante__pulso {
+  display: none !important;
+}
+
+/* Só no modo calmo: cores mais suaves e menos elementos disputando atenção */
+html.a11y-calmo {
+  filter: saturate(0.55);
+}
+html.a11y-calmo .barra-oferta {
+  display: none;
+}
+html.a11y-calmo *,
+html.a11y-calmo *::before,
+html.a11y-calmo *::after {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+html.a11y-calmo .overlay.visivel,
+html.a11y-calmo .dialogo::backdrop {
+  background: rgba(10, 20, 14, 0.5);
+}
+
+
+/* --------------------------------------------------------------------------
+   10. RÉGUA DE LEITURA
+   Escurece tudo, menos uma faixa que acompanha o mouse ou o foco.
+   -------------------------------------------------------------------------- */
+.regua-leitura {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 40%;
+  height: 56px;
+  z-index: 190;
+  pointer-events: none;
+  border-top: 3px solid #c7f36b;
+  border-bottom: 3px solid #c7f36b;
+  box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.5);
+  background: transparent;
+}
+.regua-leitura[hidden] {
+  display: none;
+}
+html.a11y-contraste .regua-leitura {
+  background-color: transparent !important;
+  border-color: #ffeb3b !important;
+  box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.7) !important;
+}
+
+
+/* --------------------------------------------------------------------------
+   11. CABEÇALHO EM CELULARES
+   Com os botões novos (Acessibilidade e Conta) o topo não cabia em 375px.
+   O atalho de WhatsApp do topo some aqui, mas o botão flutuante do WhatsApp
+   e o link do rodapé continuam disponíveis.
+   -------------------------------------------------------------------------- */
+@media (max-width: 580px) {
+  .botao-whatsapp-topo {
+    display: none;
+  }
+  .topo__acoes {
+    gap: 6px;
+  }
+  .topo__conteudo {
+    gap: 8px;
+  }
+  .topo .logo__imagem {
+    width: 112px;
+    height: 32px;
+  }
+  .botao-topo,
+  .botao-carrinho,
+  .botao-menu {
+    min-width: 44px;
+    padding-inline: 10px;
+  }
+}
+
+@media (max-width: 360px) {
+  .topo .logo__imagem {
+    width: 92px;
+    height: 28px;
+  }
+  .topo__acoes {
+    gap: 4px;
+  }
+  .botao-topo,
+  .botao-carrinho,
+  .botao-menu {
+    padding-inline: 8px;
+  }
+}
+
+
+/* --------------------------------------------------------------------------
+   12. CABEÇALHO EM NOTEBOOKS E TABLETS HORIZONTAIS
+   O menu com 8 links + botões já estourava a largura entre 961px e 1440px
+   (o site original também tinha isso). Aqui o menu em "gaveta" (hambúrguer)
+   passa a valer até 1240px, e acima disso os botões novos ficam só com
+   ícone para tudo caber. O nome continua disponível para leitores de tela.
+   -------------------------------------------------------------------------- */
+@media (min-width: 961px) and (max-width: 1240px) {
+  .botao-menu {
+    display: flex;
+  }
+  .menu {
+    display: none;
+    position: absolute;
+    top: 80px;
+    left: 0;
+    right: 0;
+    background-color: var(--white);
+    padding: 16px 24px 24px;
+    box-shadow: 0 16px 30px rgba(0, 0, 0, 0.1);
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .menu.aberto {
+    display: flex;
+  }
+  .menu__link {
+    padding: 12px 6px;
+    font-size: 14px;
+    border-bottom: 1px solid #f0f3ee;
+  }
+}
+
+@media (min-width: 961px) {
+  .botao-topo__texto {
+    /* esconde só visualmente: continua sendo lido por leitores de tela */
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+  .botao-topo {
+    padding: 8px 12px;
+  }
+  .menu {
+    gap: 8px;
+  }
+  .topo__conteudo {
+    gap: 12px;
+  }
+}
+
+/* Em telas pequenas o texto dos botões do topo também some só visualmente */
+@media (max-width: 960px) {
+  .botao-topo__texto {
+    display: block;
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+}
+
+/* Botões de contorno do site foram feitos para fundo escuro (texto branco).
+   Dentro das janelas (fundo branco) precisam de texto escuro. */
+.dialogo .botao--contorno {
+  background: transparent;
+  color: var(--ink);
+  border: 2px solid var(--ink);
+}
+.dialogo .botao--contorno:hover {
+  background: var(--paper);
+}
+.dialogo .botao[disabled] {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* O WhatsApp do topo também fica só com o ícone (o botão flutuante e o
+   rodapé continuam com o texto "WhatsApp"). */
+@media (min-width: 961px) {
+  .botao-whatsapp-topo__texto {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+  .botao-whatsapp-topo {
+    padding: 8px 12px;
+  }
+}
+
+/* Alto contraste: o que está DENTRO de um botão herda a cor do botão
+   (senão o texto ficava com uma caixa preta sobre o botão amarelo) */
+html.a11y-contraste button *,
+html.a11y-contraste .botao * {
+  background-color: transparent !important;
+  color: inherit !important;
+}

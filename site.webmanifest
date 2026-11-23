@@ -1,0 +1,22 @@
+{
+  "name": "Dynamo Sports",
+  "short_name": "Dynamo",
+  "description": "Moda esportiva sustentável que financia atividades esportivas gratuitas para a comunidade.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#14211d",
+  "theme_color": "#14211d",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "img/dynamo-sports-favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
